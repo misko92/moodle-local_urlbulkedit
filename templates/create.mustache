@@ -1,0 +1,153 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template local_urlbulkedit/create
+
+    Form for creating several links at once.
+
+    Example context (json):
+    {
+        "actionurl": "https://example.com/local/urlbulkedit/create.php?id=2",
+        "sesskey": "abc",
+        "models": [{"value": 0, "label": "Site defaults for links", "selected": true}],
+        "hidden": false,
+        "canshow": true,
+        "preview": true,
+        "previewsummary": "1 link(s) will be created:",
+        "previewsettings": "Opens: Pop-up · Completion: None · Shown",
+        "previewrows": [{"name": "Unit 2 notes", "externalurl": "https://example.com", "section": "Topic 1"}],
+        "rows": [{
+            "index": 0, "name": "Unit 2 notes", "externalurl": "https://example.com",
+            "nameerror": null, "externalurlerror": null, "sectionerror": null,
+            "sections": [{"value": 1, "label": "Topic 1", "selected": true}]
+        }]
+    }
+}}
+<form method="post" action="{{actionurl}}" id="local_urlbulkedit_create">
+    <input type="hidden" name="sesskey" value="{{sesskey}}">
+
+    <div class="d-flex flex-wrap align-items-end gap-3 mb-3">
+        <div>
+            <label for="local_urlbulkedit_model" class="form-label mb-1">{{#str}} createmodel, local_urlbulkedit {{/str}}</label>
+            <select name="model" id="local_urlbulkedit_model" class="form-select" aria-describedby="local_urlbulkedit_modelhelp">
+                {{#models}}<option value="{{value}}"{{#selected}} selected{{/selected}}>{{label}}</option>{{/models}}
+            </select>
+        </div>
+        <div class="form-check mb-2">
+            <input type="checkbox" class="form-check-input" name="hidden" value="1" id="local_urlbulkedit_hidden"
+                   {{#hidden}}checked{{/hidden}} {{^canshow}}disabled{{/canshow}}>
+            <label for="local_urlbulkedit_hidden" class="form-check-label">{{#str}} createhidden, local_urlbulkedit {{/str}}</label>
+        </div>
+        <div id="local_urlbulkedit_modelhelp" class="form-text w-100 mt-0">{{#str}} createmodel_help, local_urlbulkedit {{/str}}</div>
+    </div>
+
+    <details class="mb-3" {{^preview}}open{{/preview}}>
+        <summary>{{#str}} createpaste, local_urlbulkedit {{/str}}</summary>
+        <label for="local_urlbulkedit_paste" class="visually-hidden">{{#str}} createpaste, local_urlbulkedit {{/str}}</label>
+        <div id="local_urlbulkedit_pastehelp" class="form-text mt-2 mb-1">{{#str}} createpaste_help, local_urlbulkedit {{/str}}</div>
+        <textarea id="local_urlbulkedit_paste" class="form-control mb-2" rows="6" data-region="paste"
+                  aria-describedby="local_urlbulkedit_pastehelp"
+                  placeholder="{{#str}} createpaste_example, local_urlbulkedit {{/str}}"></textarea>
+        <button type="button" class="btn btn-outline-secondary btn-sm" data-action="paste">{{#str}} createpasteadd, local_urlbulkedit {{/str}}</button>
+    </details>
+
+    <div class="table-responsive">
+        <table class="table table-sm align-middle generaltable">
+            <thead>
+                <tr>
+                    <th scope="col">{{#str}} name, local_urlbulkedit {{/str}}</th>
+                    <th scope="col">{{#str}} externalurl, local_urlbulkedit {{/str}}</th>
+                    <th scope="col">{{#str}} section {{/str}}</th>
+                    <th scope="col"><span class="visually-hidden">{{#str}} createremoverow, local_urlbulkedit {{/str}}</span></th>
+                </tr>
+            </thead>
+            <tbody data-region="rows">
+                {{#rows}}
+                <tr data-region="row">
+                    <td>
+                        <label for="local_urlbulkedit_r{{index}}_name" class="visually-hidden">{{#str}} name, local_urlbulkedit {{/str}}</label>
+                        <input type="text" name="r[{{index}}][name]" id="local_urlbulkedit_r{{index}}_name" value="{{name}}"
+                               class="form-control form-control-sm{{#nameerror}} is-invalid{{/nameerror}}" data-field="name" size="30">
+                        {{#nameerror}}<div class="invalid-feedback">{{.}}</div>{{/nameerror}}
+                    </td>
+                    <td>
+                        <label for="local_urlbulkedit_r{{index}}_externalurl" class="visually-hidden">{{#str}} externalurl, local_urlbulkedit {{/str}}</label>
+                        <input type="text" inputmode="url" name="r[{{index}}][externalurl]" id="local_urlbulkedit_r{{index}}_externalurl"
+                               value="{{externalurl}}" size="40"
+                               class="form-control form-control-sm{{#externalurlerror}} is-invalid{{/externalurlerror}}" data-field="externalurl">
+                        {{#externalurlerror}}<div class="invalid-feedback">{{.}}</div>{{/externalurlerror}}
+                    </td>
+                    <td>
+                        <label for="local_urlbulkedit_r{{index}}_section" class="visually-hidden">{{#str}} section {{/str}}</label>
+                        <select name="r[{{index}}][section]" id="local_urlbulkedit_r{{index}}_section"
+                                class="form-select form-select-sm{{#sectionerror}} is-invalid{{/sectionerror}}" data-field="section">
+                            {{#sections}}<option value="{{value}}"{{#selected}} selected{{/selected}}>{{label}}</option>{{/sections}}
+                        </select>
+                        {{#sectionerror}}<div class="invalid-feedback">{{.}}</div>{{/sectionerror}}
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-link btn-sm p-0" data-action="removerow"
+                                title="{{#str}} createremoverow, local_urlbulkedit {{/str}}"
+                                aria-label="{{#str}} createremoverow, local_urlbulkedit {{/str}}">{{#pix}} t/delete, core {{/pix}}</button>
+                    </td>
+                </tr>
+                {{/rows}}
+            </tbody>
+        </table>
+    </div>
+    <button type="button" class="btn btn-outline-secondary mb-3" data-action="addrow">{{#str}} createaddrow, local_urlbulkedit {{/str}}</button>
+    <div>
+        <button type="submit" name="previewbutton" value="1" class="btn {{#preview}}btn-secondary{{/preview}}{{^preview}}btn-primary{{/preview}}">
+            {{#str}} preview, local_urlbulkedit {{/str}}
+        </button>
+    </div>
+    {{#preview}}
+    <div class="card mt-3" data-region="preview">
+        <div class="card-body">
+            <h3 class="h5">{{#str}} previewheading, local_urlbulkedit {{/str}}</h3>
+            <p class="mb-1">{{previewsummary}}</p>
+            <p class="text-muted">{{previewsettings}}</p>
+            <div class="table-responsive">
+                <table class="table table-sm generaltable mb-2">
+                    <thead>
+                        <tr>
+                            <th scope="col">{{#str}} name, local_urlbulkedit {{/str}}</th>
+                            <th scope="col">{{#str}} externalurl, local_urlbulkedit {{/str}}</th>
+                            <th scope="col">{{#str}} section {{/str}}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#previewrows}}
+                        <tr>
+                            <td>{{name}}</td>
+                            <td class="text-break">{{externalurl}}</td>
+                            <td>{{section}}</td>
+                        </tr>
+                        {{/previewrows}}
+                    </tbody>
+                </table>
+            </div>
+            <button type="submit" name="createbutton" value="1" class="btn btn-primary">{{#str}} createbutton, local_urlbulkedit {{/str}}</button>
+        </div>
+    </div>
+    {{/preview}}
+</form>
+{{#js}}
+    require(['local_urlbulkedit/create'], function(create) {
+        create.init('local_urlbulkedit_create');
+    });
+{{/js}}
